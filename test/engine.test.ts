@@ -58,8 +58,8 @@ const testPouchDb = async () => {
   console.log('findData: ', findData.docs);
 };
 
-describe('引擎测试', () => {
-  // it('查询交易所信息', exInfo);
-  // it('初始化套利机器人', initRobot);
-  it('测试pouchdb', testPouchDb);
+describe('Испытание двигателя', () => {
+  // it('Информация об обмене информацией', exInfo);
+  // it('Инициализация арбитражного робота', initRobot);
+  it('тест pouchdb', testPouchDb);
 });
