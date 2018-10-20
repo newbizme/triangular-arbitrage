@@ -12,10 +12,10 @@ export class Trade extends StorageBase {
 
   async putTrades(trades: types.ITrade[]) {
     try {
-      logger.debug('存入交易数据，大小：' + trades.length);
+      logger.debug('Данные транзакции депозита, размер：' + trades.length);
       return await this.bulkDocs(trades);
     } catch (err) {
-      logger.error(`存储交易数据出错: ${err.message}`);
+      logger.error(`Ошибка хранения данных транзакции: ${err.message}`);
     }
   }
 }
