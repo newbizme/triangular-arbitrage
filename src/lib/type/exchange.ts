@@ -36,11 +36,11 @@ export enum ExchangeId {
 export const SupportExchanges = [
   {
     id: ExchangeId.KuCoin,
-    name: '库币',
+    name: 'Библиотека монет',
   },
   {
     id: ExchangeId.Binance,
-    name: '币安',
+    name: 'An монеты',
   },
   {
     id: ExchangeId.Bitbank,
