@@ -12,13 +12,13 @@ export class Rank extends StorageBase {
 
   async putRanks(ranks: types.IRank[]) {
     try {
-      logger.info('存入排行数据，大小：' + ranks.length);
+      logger.info('Сохраните данные ранжирования, размер：' + ranks.length);
       const docs = await this.allDocs({
         include_docs: true,
         attachments: true,
       });
       if (docs.rows.length > config.display.maxRows) {
-        // 超过最大显示数时，清空数据库
+        // Превышено максимальное число отображения, пустая база данных
         await this.removeAllDocs();
       }
 
@@ -38,7 +38,7 @@ export class Rank extends StorageBase {
       }
       return await this.bulkDocs(ranks);
     } catch (err) {
-      logger.error(`存储排行数据出错: ${err.message}`);
+      logger.error(`Ошибка хранения данных строки: ${err.message}`);
     }
   }
 }
