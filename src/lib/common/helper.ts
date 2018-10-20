@@ -113,8 +113,8 @@ export class Helper {
   }
 
   /**
-   * 获取排行数据
-   * @param triangles 三角套利数组
+   * Получить данные ранжирования
+   * @param triangles Треугольный массив арбитража
    */
   static getRanks(exchangeId: types.ExchangeId, triangles: types.ITriangle[]) {
     const ranks: types.IRank[] = [];
@@ -153,8 +153,8 @@ export class Helper {
   }
 
   static getTriangleRate(a: types.IEdge, b: types.IEdge, c: types.IEdge) {
-    // 利率 = (1/priceA/priceB*priceC-1)-1
-    // 资本金
+    // Процентная ставка = (1/priceA/priceB*priceC-1)-1
+    // капитал
     const capital = new BigNumber(1);
     let step1Rate = new BigNumber(a.price);
     if (a.side === 'buy') {
@@ -188,7 +188,7 @@ export class Helper {
   }
 
   /**
-   * 获取价格精度
+   * Получить точность цен
    */
   static getPriceScale(pairs: types.IPairs, pairName: string): types.IPrecision | undefined {
     const symbol = pairs[pairName];
@@ -203,38 +203,38 @@ export class Helper {
   }
 
   /**
-   * 获取基础货币交易额度
+   * Получить сумму транзакции базовой валюты
    */
   static getBaseTradeAmount(tradeAmount: BigNumber, freeAmount: BigNumber) {
-    // 如果A点交易额 x 50% < 该资产可用额度
+    // Если сумма транзакции A x 50% < Доступная сумма актива
     if (tradeAmount.times(0.5).isLessThan(freeAmount)) {
-      // 返回交易额 x 50%
+      // Доступная сумма актива x 50%
       return tradeAmount.times(0.5);
     }
-    // 返回可用额度 x 50%
+    // Возврат доступных кредитов x 50%
     return freeAmount.times(0.5);
   }
 
   /**
-   * 获取基础货币交易额度
+   * Получить сумму транзакции базовой валюты
    */
   static getBaseAmountByBC(triangle: types.ITriangle, freeAmount: BigNumber, minAmount: BigNumber) {
     const { a, b, c } = triangle;
-    // B点的数量
+    // Количество точек B
     const bAmount = Helper.convertAmount(b.price, b.quantity, b.side);
 
-    // 换回A点的数量
+    // Возвратитесь к числу точек A
     const b2aAmount = Helper.convertAmount(a.price, bAmount.toNumber(), a.side);
-    // c点数量
+    // Количество точек c
     const c2aAmount = Helper.getConvertedAmount({
       side: triangle.c.side,
       exchangeRate: triangle.c.price,
       amount: triangle.c.quantity,
     })
 
-    // 选取数量最大的
+    // Выберите наибольшее число
     const thanAmount = b2aAmount.isGreaterThan(c2aAmount) ? b2aAmount : c2aAmount;
-    // 选取数量 > 最小交易量 && 选取数量 < 可用余额
+    // Выберите количество> Минимальный объем && Выберите количество <Доступный баланс
     if (thanAmount.isGreaterThan(minAmount) && thanAmount.isLessThan(freeAmount)) {
       return thanAmount;
     }
@@ -242,14 +242,14 @@ export class Helper {
   }
 
   /**
-   * 获取转换后的数量
+   * Получите преобразованное количество
    */
   static getConvertedAmount(rateQuote: types.IRateQuote) {
     return Rate.convert(rateQuote);
   }
 
   /**
-   * 转换获取指定总价（标的货币数量）时，需要的交易数量
+   * Количество транзакций, необходимых для конвертации указанной общей цены (суммы целевой валюты)
    * @param price 价格
    * @param cost 总价
    * @param side 方向
@@ -259,7 +259,7 @@ export class Helper {
   }
 
   /**
-   * 检查交易队列是否超过限制
+   * Количество транзакций, необходимых для конвертации указанной общей цены (суммы целевой валюты)
    */
   static async checkQueueLimit(queue: Queue) {
     const res = await queue.info();
