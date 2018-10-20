@@ -34,8 +34,8 @@ const testQueryOrderStatus = async () => {
   console.log(res);
 };
 
-describe('API测试', () => {
-  // it('测试下单', testCreateOrder);
-  // it('测试订单查询', testQueryOrder);
-  it('测试订单状态查询', testQueryOrderStatus);
+describe('API тест', () => {
+  // it('Тестовый заказ', testCreateOrder);
+  // it('Запрос тестового заказа', testQueryOrder);
+  it('Запрос состояния заказа', testQueryOrderStatus);
 });
