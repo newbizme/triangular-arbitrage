@@ -34,7 +34,7 @@ export class Aggregator {
       switch (exchange.id) {
         case types.ExchangeId.Binance:
           if (!extTickers) {
-            logger.error(`getAllTickers:[${exchange.id}], 未传递extTickers数据！`);
+            logger.error(`getAllTickers:[${exchange.id}], Не доставлено extTickers Данные!`);
             return;
           }
           return Helper.changeBinanceTickers(extTickers, exchange.pairs);
@@ -63,7 +63,7 @@ export class Aggregator {
           return await api.fetchTickers();
       }
     } catch (err) {
-      logger.error(`getAllTickers出错： ${err.message ? err.message : err.msg}`);
+      logger.error(`getAllTickers ошибка： ${err.message ? err.message : err.msg}`);
     }
   }
 }
