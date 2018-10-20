@@ -25,12 +25,12 @@ export class Trading {
   async testOrder(exchange: types.IExchange, triangle: types.ITriangle) {
     return await this.mocker.testOrder(exchange, triangle);
   }
-  // 下单
+  // заказ
   async placeOrder(exchange: types.IExchange, triangle: types.ITriangle) {
     try {
-      // 清理超时数据
+      // Данные таймаута очистки
       await this.storage.queue.clearQueue();
-      // 继续处理失败的队列
+      // Продолжить обработку неудавшейся очереди
       await this.daemon.continueTrade(exchange);
 
       const limitCheck = await Helper.checkQueueLimit(this.storage.queue)
@@ -38,21 +38,21 @@ export class Trading {
         return;
       }
       const testTrade = await this.testOrder(exchange, triangle);
-      // 未通过检查时返回
+      // Вернитесь, если не пройдете проверку
       if (!testTrade || !testTrade.id) {
-        // logger.info(`套利组合未通过可行性检测！！`);
+        // logger.info(`Комбинация арбитража не смогла выполнить технико-экономическое обоснование! !`);
         return;
       }
 
       if (config.trading.mock) {
-        logger.info('配置为模拟交易，终止真实交易！');
+        logger.info('Настройте, чтобы имитировать торговлю и прекратить реальную торговлю!');
         return;
       }
 
-      logger.info('----- 套利开始 -----');
-      logger.info(`路径：${clc.cyanBright(triangle.id)} 利率: ${triangle.rate}`);
+      logger.info('----- Арбитраж начинается -----');
+      logger.info(`путь：${clc.cyanBright(triangle.id)} Процентная ставка: ${triangle.rate}`);
 
-      // 放入交易队列
+      // Положить в очередь на торговлю
       const queueId = await this.storage.openTradingSession({
         mock: testTrade,
         real: testTrade
@@ -61,11 +61,11 @@ export class Trading {
         return;
       }
       testTrade.queueId = queueId;
-      // 执行a点订单
+      // Выполнить заказ
       await this.order.orderA(exchange, testTrade);
     } catch (err) {
-      logger.error(`处理订单出错： ${err.message ? err.message : err.msg}`);
-      // 退出交易队列
+      logger.error(`Ошибка порядка обработки： ${err.message ? err.message : err.msg}`);
+      // Выйти из торговой очереди
       // await this.storage.clearQueue(triangle.id, exchange.id);
     }
   }
