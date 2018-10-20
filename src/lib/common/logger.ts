@@ -2,14 +2,14 @@ const moment = require('moment');
 const config = require('config');
 import * as fs from 'fs';
 
-// 准备日志
+// Подготовьте журнал
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, label, printf, colorize } = format;
 timestamp();
 const logDir = 'log';
-// 如果目录不存在
+// Если каталог не существует
 if (!fs.existsSync(logDir)) {
-  // 创建日志目录
+  // Создать каталог журнала
   fs.mkdirSync(logDir);
 }
 
@@ -18,7 +18,7 @@ const myFormat = printf((info: any) => {
   return `${info.timestamp} [${info.level}] ${info.message}`;
 });
 let myTransports = [
-  // 将输出着色到控制台
+  // Цветной вывод на консоль
   new transports.File({
     filename: `${logDir}/error.log`,
     level: 'error',
