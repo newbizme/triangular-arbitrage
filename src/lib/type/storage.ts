@@ -11,37 +11,37 @@ export interface IRank {
 }
 
 /**
- * 三角组合边的成交记录
+ * Запись транзакции со стороны треугольной комбинации
  */
 export interface ITradeEdge {
   pair: string;
   side: 'buy' | 'sell';
-  // 成交价格
+  // Цена сделки
   price: number;
-  // 报单数量
+  // Количество заказов
   amount: number;
-  // 手续费（未折扣）
+  // Плата за обработку (недисконтированная)
   fee: string;
   orderId: string;
   status: 'open' | 'closed' | 'canceled';
-  // 用时
+  // При использовании
   timecost: string;
 }
 
 export interface ITradeTriangle {
-  // 三角组合唯一id（例:btc-bnb-bcd）
+  // Треугольная комбинация уникальный id (пример:btc-bnb-bcd）
   id: string;
-  // 队列id
+  // очередь id
   queueId: string;
   a: ITradeEdge;
   b: ITradeEdge;
   c: ITradeEdge;
-  // 套利货币
+  // Валюта арбитража
   coin: string;
   exchange: string;
-  // 起始买入资金
+  // Начальный капитал покупки
   before: number;
-  // 套利后获得资金
+  // Получать средства после арбитража
   after: number;
   profit: string;
   rate: string;
