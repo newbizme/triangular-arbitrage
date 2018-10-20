@@ -4,7 +4,7 @@ import * as types from './type';
 import { logger, Helper } from './common';
 
 /**
- * 通用事件处理器
+ * Общий обработчик событий
  */
 export class Event extends EventEmitter {
   trading: Trading;
@@ -18,7 +18,7 @@ export class Event extends EventEmitter {
 
   async onPlaceOrder(exchange: types.IExchange, triangle: types.ITriangle) {
     const timer = Helper.getTimer();
-    logger.debug('执行订单事件[开始]');
+    logger.debug('Событие заказа выполнения [начало]');
     await this.trading.placeOrder(exchange, triangle);
   }
 
