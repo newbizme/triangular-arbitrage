@@ -59,16 +59,16 @@ const testPlaceOrder = async () => {
     // for (let i = 0; i < 10; i++) {
     try {
       const res = await trading.placeOrder(exchange, triangle);
-      console.log('下单结果：', res);
+      console.log('Результат заказа：', res);
     } catch (e) {
-      console.log('下单异常：', e.stack);
+      console.log('Исключение заказа：', e.stack);
     }
     // }
   }
 };
 
-describe('交易测试', () => {
-  // it('测试获取资产', testFetchBalance)
-  // it('测试模拟下单', testMockOrder);
-  it('测试下单', testPlaceOrder);
+describe('Тестирование транзакций', () => {
+  // it('Проверка приобретения активов', testFetchBalance)
+  // it('Заказ тестового моделирования', testMockOrder);
+  it('Тестовый заказ', testPlaceOrder);
 });
