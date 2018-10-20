@@ -9,8 +9,8 @@ export class StorageBase extends PouchDB {
   }
 
   /**
-   * 存储数据
-   * @todo 存储放到待修改
+   * Хранение данных
+   * @todo Магазин, подлежащий изменению
    * @param rows
    */
   async putRows(rows: { [attr: string]: any }[]) {
@@ -26,7 +26,7 @@ export class StorageBase extends PouchDB {
       }
       return await this.bulkDocs(rows);
     } catch (err) {
-      logger.error(`存储数据集出错: ${err.message}`);
+      logger.error(`Ошибка хранения набора данных: ${err.message}`);
     }
   }
 
@@ -42,7 +42,7 @@ export class StorageBase extends PouchDB {
       const dbRow = Object.assign({}, docs.rows.find((o) => o.id === row.id), row);
       return await this.put(dbRow);
     } catch (err) {
-      logger.error(`存储数据出错: ${err.message}`);
+      logger.error(`Ошибка хранения данных: ${err.message}`);
     }
   }
 
@@ -66,7 +66,7 @@ export class StorageBase extends PouchDB {
       }
       return docs;
     } catch (err) {
-      logger.error(`获取数据出错: ${err.message}`);
+      logger.error(`Ошибка при получении данных: ${err.message}`);
     }
   }
 
@@ -93,7 +93,7 @@ export class StorageBase extends PouchDB {
         return await this.bulkDocs(docs);
       }
     } catch (err) {
-      logger.error(`删除数据出错: ${err.message}`);
+      logger.error(`Ошибка удаления данных: ${err.message}`);
     }
   }
 
