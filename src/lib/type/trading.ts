@@ -10,51 +10,51 @@ export interface ITickers {
 }
 
 /**
- * 三角组合的边
+ * Край треугольной комбинации
  */
 export interface IEdge {
   pair: string;
   coinFrom: string;
   coinTo: string;
-  // 交易方向
+  // Торговое направление
   side: 'sell' | 'buy';
-  // 最佳价格
+  // Лучшая цена
   price: number;
-  // 最佳数量
+  // Оптимальное количество
   quantity: number;
 }
 
 /**
- * 三角组合
+ * Треугольная комбинация
  */
 export interface ITriangle {
-  // 三角组合唯一id（例:btc-bnb-bcd）
+  // Только треугольная комбинация一id（пример:btc-bnb-bcd）
   id: string;
   a: IEdge;
   b: IEdge;
   c: IEdge;
-  // 利率
+  // Процентная ставка
   rate: number;
-  // 时间戳
+  // Отметка
   ts: number;
 }
 
 export interface IPrecision {
-  // 数量精度
+  // Точность количества
   amount: number;
-  // 价格精度
+  // Ценовая точность
   price: number;
-  // 最小成交金额
+  // Минимальная сумма транзакции
   cost?: number;
 }
 
 /**
- * 兑换报价对象
+ * Исключить цитируемый объект
  */
 export interface IRateQuote {
   side: 'sell' | 'buy';
-  // 兑换率
+  // Обменный курс
   exchangeRate: number;
-  // 数量
+  // количество
   amount: number;
 }
