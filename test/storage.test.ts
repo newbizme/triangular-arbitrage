@@ -132,9 +132,9 @@ const testTrade = async () => {
   console.log(JSON.stringify(res, null, 2));*/
 };
 
-describe('存储测试', () => {
-  // it('测试pouchdb', testPutDb);
-  // it('测试Rank', testRank);
-  it('测试queue', testQueue);
-  // it('测试Trade', testTrade);
+describe('Тест на хранение', () => {
+  // it('тест pouchdb', testPutDb);
+  // it('тест Rank', testRank);
+  it('тест queue', testQueue);
+  // it('тест Trade', testTrade);
 });
