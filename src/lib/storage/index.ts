@@ -22,7 +22,7 @@ export class Storage {
 
   private async getQueue(tradeId: string, exchange: string) {
     const queueRes = await this.queue.findQueue(tradeId, exchange);
-    // 队列中triangleId和exchange组合key是唯一的
+    // В очереди triangleId и exchange комбинирование key Уникально
     if (!queueRes || !queueRes.doc) {
       return;
     }
@@ -30,7 +30,7 @@ export class Storage {
   }
 
   /**
-   * 打开交易会话
+   * Открыть торговую сессию
    */
   async openTradingSession(trade: types.ITrade) {
     if (!trade.mock.id || !trade.mock.exchange) {
