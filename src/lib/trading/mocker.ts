@@ -13,11 +13,11 @@ export class Mocker extends ApiHandler {
   }
 
   /**
-   * 模拟每个边的交易信息
+   * Имитировать информацию транзакции для каждой стороны
    *
-   * @param pairs 全市场交易对
-   * @param edge 组合边
-   * @param amount 待交易数量
+   * @param pairs Полная рыночная сделка
+   * @param edge Комбинированная сторона
+   * @param amount Количество ожидающих транзакций
    */
   getMockTradeEdge(pairs: types.IPairs, edge: types.IEdge, amount: BigNumber) {
     const tradeEdge = <types.ITradeEdge>{
@@ -26,24 +26,24 @@ export class Mocker extends ApiHandler {
     };
     const timer = Helper.getTimer();
 
-    // 获取交易精度
+    // Получить точность транзакции
     const priceScale = Helper.getPriceScale(pairs, edge.pair);
     if (!priceScale) {
-      logger.debug(`未取得交易精度！！`);
+      logger.debug(`Нет точности транзакций! !`);
       return;
     }
-    // 获取格式化精度(买->价格精度、卖->数量精度)
+    // Получите точность форматирования (buy-> price precision, sell-> quantity precision)
     const precision = edge.side.toLowerCase() === 'buy' ? priceScale.price : priceScale.amount;
-    // 格式化购买数量(多余小数位舍弃)
+    // Получите точность форматирования (buy-> price precision, sell-> quantity precision)
     const fmAmount = new BigNumber(amount.toFixed(precision, 1));
     if (fmAmount.isZero()) {
-      logger.debug(`格式化购买数量后结果为0！！`);
+      logger.debug(`Результатом является 0 после форматирования количества покупки! !`);
       return;
     }
-    // 查询交易对手续费
+    // Плата за транзакцию
     const feeRate = pairs[edge.pair].maker;
     if (!feeRate || feeRate <= 0) {
-      logger.debug(`未取得交易对的手续费！！`);
+      logger.debug(`Не получил комиссию за транзакцию! !`);
       return;
     }
     tradeEdge.amount = +amount.toFixed(priceScale.amount, 1);
@@ -57,18 +57,18 @@ export class Mocker extends ApiHandler {
     return tradeEdge;
   }
 
-  // 订单执行前，可行性检查
+  // Проверка осуществимости до выполнения заказа
   async testOrder(exchange: types.IExchange, triangle: types.ITriangle) {
-    // logger.info(`三角套利组合：${triangle.id}, 订单可行性检测...`);
+    // logger.info(`Треугольное арбитражное сочетание：${triangle.id}, Заказать технико-экономическое обоснование ...`);
     if (!exchange.endpoint.private || !exchange.pairs) {
-      logger.error('交易所相关参数出错！！');
+      logger.error('Параметры, связанные с обменом, неверны! !');
       return;
     }
 
-    // 查询资产
+    // Активы запроса
     const balances = await this.getBalance(exchange);
     if (!balances) {
-      logger.debug('未查找到持有资产！！');
+      logger.debug('Не найдено активов холдинга! !');
       return;
     }
 
@@ -79,20 +79,20 @@ export class Mocker extends ApiHandler {
 
     const asset = balances[tradeTriangle.coin];
     if (!asset) {
-      logger.debug(`未查找到持有${tradeTriangle.coin}！！`);
+      logger.debug(`Не найдено${tradeTriangle.coin}！！`);
       return;
     }
     const free = new BigNumber(asset.free);
     if (free.isZero()) {
-      logger.debug(`未查找到持有${tradeTriangle.coin}！！`);
+      logger.debug(`Не найдено${tradeTriangle.coin}！！`);
       return;
     }
-    // 获取交易精度
+    // Получить точность транзакции
     const priceScale = Helper.getPriceScale(exchange.pairs, triangle.a.pair);
     if (!priceScale || !priceScale.cost) {
       return;
     }
-    // 检查最小交易数量
+    // Проверьте минимальное количество транзакций
     let minAmount;
     if (triangle.a.coinFrom.toUpperCase() !== 'BTC') {
       minAmount = Helper.convertAmount(triangle.a.price, priceScale.cost, triangle.a.side).times(1.1);
@@ -105,13 +105,13 @@ export class Mocker extends ApiHandler {
     }
 
     if (triangle.a.side === 'sell' && free.isLessThanOrEqualTo(minAmount)) {
-     // logger.debug(`持有${free + ' ' + triangle.a.coinFrom},小于最低交易数量（${minAmount}）！！`);
+     // logger.debug(`держать${free + ' ' + triangle.a.coinFrom},Меньше минимального количества транзакций（${minAmount}）！！`);
       return;
     }
-    // 查找最佳交易量
+    // Найдите лучший объем сделки
     const tradeAmount = Helper.getBaseAmountByBC(triangle, free, minAmount);
 
-    // ---------------------- A点开始------------------------
+    // ---------------------- Начиная с точки A------------------------
     const tradeEdgeA = this.getMockTradeEdge(exchange.pairs, triangle.a, tradeAmount);
     if (!tradeEdgeA) {
       return;
@@ -119,7 +119,7 @@ export class Mocker extends ApiHandler {
     tradeTriangle.a = tradeEdgeA;
     tradeTriangle.before = tradeEdgeA.amount;
 
-    // ---------------------- B点开始------------------------
+    // ---------------------- Начиная с точки B------------------------
     let aAmount = tradeEdgeA.amount;
     if (tradeEdgeA.side === 'sell') {
       tradeTriangle.before = tradeEdgeA.amount;
@@ -142,7 +142,7 @@ export class Mocker extends ApiHandler {
     }
     tradeTriangle.b = tradeEdgeB;
 
-    // ---------------------- C点开始------------------------
+    // ---------------------- Начиная с точки C------------------------
     let cAmount = bAmount;
     if (triangle.c.side === 'buy') {
       cAmount = Helper.getConvertedAmount({
@@ -166,24 +166,24 @@ export class Mocker extends ApiHandler {
     tradeTriangle.after = +after.toFixed(8);
 
     const profit = new BigNumber(after).minus(tradeTriangle.before);
-    // 利润
+    // прибыль
     tradeTriangle.profit = profit.toFixed(8);
     if (profit.isLessThanOrEqualTo(0)) {
-      // logger.info(`订单可行性检测结果，利润(${clc.redBright(tradeTriangle.profit)})为负数，终止下单！`);
+      // logger.info(`Заказать результат выполнимости, прибыль(${clc.redBright(tradeTriangle.profit)})Для отрицательных чисел прекратите размещение заказов!`);
       return tradeTriangle;
     }
     tradeTriangle.id = triangle.id;
-    // 利率
+    // Процентная ставка
     tradeTriangle.rate =
       profit
         .div(tradeTriangle.before)
         .times(100)
         .toFixed(3) + '%';
     tradeTriangle.ts = Date.now();
-    logger.info(clc.yellowBright('----- 模拟交易结果 -----'));
-    logger.info(`套利货币：${tradeTriangle.coin}`);
-    logger.info(`套利前资产：${tradeTriangle.before}, 套利后资产：${tradeTriangle.after}`);
-    logger.info(`利润：${clc.greenBright(tradeTriangle.profit)}, 利率：${clc.greenBright(tradeTriangle.rate)}`);
+    logger.info(clc.yellowBright('----- Имитированные результаты торгов -----'));
+    logger.info(`Валюта арбитража：${tradeTriangle.coin}`);
+    logger.info(`Арбитражные активы：${tradeTriangle.before}, Арбитражные активы：${tradeTriangle.after}`);
+    logger.info(`прибыль：${clc.greenBright(tradeTriangle.profit)}, Процентная ставка：${clc.greenBright(tradeTriangle.rate)}`);
     return tradeTriangle;
   }
 }
