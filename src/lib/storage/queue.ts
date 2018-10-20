@@ -16,10 +16,10 @@ export class Queue extends StorageBase {
       if (!queue.ts) {
         queue.ts = Date.now();
       }
-      logger.debug('存入队列数据：' + JSON.stringify(queue));
+      logger.debug('Данные о очереди：' + JSON.stringify(queue));
       return await this.post(queue);
     } catch (err) {
-      logger.error(`存储队列数据出错: ${err.message}`);
+      logger.error(`Ошибка хранения данных очереди: ${err.message}`);
     }
   }
 
@@ -29,7 +29,7 @@ export class Queue extends StorageBase {
 
   async getQueue(trade: types.ITradeTriangle) {
     const queueRes = await this.findQueue(trade.id, trade.exchange);
-    // 队列中triangleId和exchange组合key是唯一的
+    //В очереди triangleId и exchange комбинирование key Уникально
     if (!queueRes || !queueRes.doc) {
       return;
     }
@@ -68,9 +68,9 @@ export class Queue extends StorageBase {
       }
       const queue = <types.IQueue>row.doc;
       const timelimit = Date.now() - moment.duration(15, 'm').asMilliseconds();
-      // 队列中数据超过15分钟时删除
+      // Удаляется в очереди, когда данные превышают 15 минут
       if (queue._id && queue.ts && timelimit > queue.ts) {
-        logger.error(`删除超过15分钟的队列: ${queue._id}`);
+        logger.error(`Удаление очередей дольше 15 минут: ${queue._id}`);
         await this.removeQueue(queue._id);
       }
     }
