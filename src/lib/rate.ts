@@ -3,9 +3,9 @@ import { BigNumber } from 'bignumber.js';
 
 export class Rate {
   /**
-   * 汇率对象转换（返回可购买数量）
+   * Преобразование объектов обменного курса (возвращаемое количество покупаемых товаров)
    *
-   * @param rateQuote 转换对象
+   * @param rateQuote Объект преобразования
    */
   static convert(rateQuote: types.IRateQuote): BigNumber {
     const bigAmount = new BigNumber(rateQuote.amount);
@@ -16,10 +16,10 @@ export class Rate {
   }
 
   /**
-   * 换算需使用的数量
+   * Преобразование количества, которое будет использоваться
    *
-   * @param price 价格
-   * @param cost 数量*价格=总价
+   * @param price цена
+   * @param cost Количество * цена = общая стоимость
    */
   static convertAmount(price: number, cost: number, side: 'sell' | 'buy') {
     const bigCost = new BigNumber(cost);
