@@ -4,8 +4,8 @@ const api = require('binance');
 const exchangeAPI = new api.BinanceRest({
   key: config.binance.apiKey,
   secret: config.binance.secret,
-  timeout: parseInt(config.restTimeout, 10), // 可选，默认为15000，请求超时为毫秒
-  recvWindow: parseInt(config.restRecvWindow, 10), // 可选，默认为5000，如果您收到时间戳错误，则增加
+  timeout: parseInt(config.restTimeout, 10), // Необязательно, значение по умолчанию - 15000, а таймаут запроса - миллисекунды.
+  recvWindow: parseInt(config.restRecvWindow, 10), // Необязательно, по умолчанию 5000, если вы получаете ошибку временной метки, увеличиваете
   disableBeautification: !config.restBeautify,
 });
 const testOrder = async () => {
@@ -41,7 +41,7 @@ const exInfo = async () => {
   // assert(symbolInfo);
 };
 
-describe('订单测试', () => {
-  // it('下达测试单', testOrder);
-  it('查询交易所信息', exInfo);
+describe('Заказать тест', () => {
+  // it('Сбросить тестовый лист', testOrder);
+  it('Информация об обмене информацией', exInfo);
 });
