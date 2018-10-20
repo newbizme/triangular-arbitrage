@@ -11,11 +11,11 @@ const config = require('config');
 export class TriangularArbitrage extends Event {
   exchanges: Map<string, types.IExchange> = new Map();
   activeExchangeId: types.ExchangeId;
-  // 机器人id
+  // Идентификатор робота
   worker = 0;
-  // 匹配引擎
+  // Соответствующий двигатель
   engine: Engine;
-  // 集计数据提供
+  // Совокупная поставка данных
   aggregator: Aggregator;
 
   constructor() {
@@ -27,13 +27,13 @@ export class TriangularArbitrage extends Event {
 
   async start(activeExchangeId?: types.ExchangeId) {
     const timer = Helper.getTimer();
-    logger.debug('启动三角套利机器人[开始]');
+    logger.debug('Запуск треугольного арбитражного робота [start]');
     if (activeExchangeId) {
       this.activeExchangeId = activeExchangeId;
     }
 
     try {
-      // 初始化交易所
+      // Инициализировать обмен
       await this.initExchange(this.activeExchangeId);
       if (types.ExchangeId.Binance === this.activeExchangeId) {
         const exchange = this.exchanges.get(this.activeExchangeId);
@@ -45,11 +45,11 @@ export class TriangularArbitrage extends Event {
         this.worker = setInterval(this.estimate.bind(this), config.arbitrage.interval * 1000);
       }
 
-      logger.info('----- 机器人启动完成 -----');
+      logger.info('----- Запуск робота завершен -----');
     } catch (err) {
-      logger.error(`机器人运行出错(${Helper.endTimer(timer)}): ${err}`);
+      logger.error(`Ошибка запуска робота(${Helper.endTimer(timer)}): ${err}`);
     }
-    logger.debug(`启动三角套利机器人[终了] ${Helper.endTimer(timer)}`);
+    logger.debug(`Запуск треугольного арбитражного робота [end] ${Helper.endTimer(timer)}`);
   }
 
   destroy() {
@@ -60,9 +60,9 @@ export class TriangularArbitrage extends Event {
 
   public async initExchange(exchangeId: types.ExchangeId) {
     const timer = Helper.getTimer();
-    logger.debug('初始化交易所[启动]');
+    logger.debug('Инициализировать обмен [start]');
     try {
-      // 查看是否已初始化api
+      // Посмотрите, была ли инициализирована api
       if (this.exchanges.get(exchangeId)) {
         return;
       }
@@ -93,18 +93,18 @@ export class TriangularArbitrage extends Event {
         }
       }
       this.exchanges.set(exchangeId, exchange);
-      logger.debug(`初始化交易所[终了] ${Helper.endTimer(timer)}`);
+      logger.debug(`Инициализировать обмен [end] ${Helper.endTimer(timer)}`);
     } catch (err) {
-      logger.error(`初始化交易所[异常](${Helper.endTimer(timer)}): ${err}`);
+      logger.error(`Инициализировать обмен [ненормальный](${Helper.endTimer(timer)}): ${err}`);
     }
   }
 
   // 套利测算
   async estimate(tickers?: types.Binance24HrTicker[]) {
     const timer = Helper.getTimer();
-    logger.debug('监视行情[开始]');
+    logger.debug('Мониторинг рынка [начало]');
     try {
-      // logger.info(clc.magentaBright('----- 套利测算 -----'));
+      // logger.info(clc.magentaBright('----- Расчет арбитража -----'));
       const exchange = this.exchanges.get(this.activeExchangeId);
       if (!exchange) {
         return;
@@ -113,7 +113,7 @@ export class TriangularArbitrage extends Event {
       if (!allTickers) {
         return;
       }
-      // 匹配候选者
+      // Соответствующий кандидат
       const candidates = await this.engine.getCandidates(exchange, allTickers);
       if (!candidates || candidates.length === 0) {
         return;
@@ -121,13 +121,13 @@ export class TriangularArbitrage extends Event {
 
       const ranks = Helper.getRanks(exchange.id, candidates);
       if (config.storage.tickRank && ranks.length > 0) {
-        // 更新套利数据
+        // Обновление данных арбитража
         this.emit('updateArbitage', ranks);
       }
-      // 更新套利数据
+      // Обновление данных арбитража
       if (ranks[0]) {
-        // logger.info(`选出套利组合第一名：${candidates[0].id}, 预测利率(扣除手续费): ${ranks[0].profitRate[0]}`);
-        // 执行三角套利
+        // logger.info(`Выберите первое место в арбитражном объединении：${candidates[0].id}, Прогнозная процентная ставка (вычитание платы за обработку): ${ranks[0].profitRate[0]}`);
+        // Выполнение треугольного арбитража
         this.emit('placeOrder', exchange, candidates[0]);
       }
 
@@ -137,9 +137,9 @@ export class TriangularArbitrage extends Event {
         const path = candidate.id.length < 15 ? candidate.id + ' '.repeat(15 - candidate.id.length) : candidate.id;
         logger.info(`路径：${clc.cyanBright(path)} 利率: ${clcRate}`);
       }*/
-      logger.debug(`监视行情[终了] ${Helper.endTimer(timer)}`);
+      logger.debug(`Мониторинг рынка [окончательный] ${Helper.endTimer(timer)}`);
     } catch (err) {
-      logger.error(`监视行情[异常](${Helper.endTimer(timer)}): ${JSON.stringify(err)}`);
+      logger.error(`Мониторинг рынка [ненормальный](${Helper.endTimer(timer)}): ${JSON.stringify(err)}`);
     }
   }
 }
