@@ -1,58 +1,58 @@
 # triangular-arbitrage
-数字货币-三角套利机器人
+Цифровая валюта - треугольный арбитражный робот
 
 
-## 配置
-1、config/default.org.toml 改为 config/default.toml
+## конфигурация
+1、config/default.org.toml Изменить на config/default.toml
 
-2、config/default.toml文件中配置修改，例如：币安apikey
+2、config/default.tomlИзменения конфигурации в файле，Например：ваши apikey
 
-## 启动步骤
-启动自动套利程序步骤
+## запуск
+Запуск автоматической процедуры арбитража
 
 ```js
-// 只在第一次安装程序时需要运行
+// Необходимо запускать только при первом запуске программы
 npm install
-// 启动自动套利主程序
+// Запустить автоматическую основную программу арбитража
 npm start
 ```
 
-## 控制台运行效果
+## запуска консоли
 <p align="center"><img src="assets/running-result.png"></p>
 
 
-## web服务启动步骤
+## web запуск
 
-非必须启动项，只对想看的排行页面的同学需要如下配置
+Нет необходимости запускать элемент. Только учащимся, которые хотят видеть страницу ранжирования, необходимо настроить следующее
 
-- 下载并安装CouchDB数据库
+-Загрузите и установите CouchDB база данных
 https://couchdb.apache.org/#download
 
-- default.toml配置
+- default.toml конфигурация
 
-找到storage项目中的`url = ""`改为`url = "http://127.0.0.1:5984"`
+найти storage В проекте`url = ""`Изменить на`url = "http://127.0.0.1:5984"`
 
-- CMD切换到项目路径，执行如下命令
+- CMD Перейдите к пути к проекту и выполните следующую команду
 ```js
 npm run ws
 ```
 
-## 页面显示
-打开`127.0.0.1：3000`后，显示如下：
+## Отображение страницы
+открытый `127.0.0.1：3000` После этого дисплей выглядит следующим образом：
 <p align="center"><img src="assets/webui.png"></p>
 
-## 系统构成图
+## Схема составления системы
 <p align="center"><img src="assets/diagram.png"></p>
 
-## 概念图
+## Концептуальная карта
 <p align="center"><img src="assets/ta-chart.png"></p>
 <p align="center"><img src="assets/a-b-c.png"></p>
 
-## 交易程序交流 QQ 群
+## Обмен торговой группой QQ
 310298370
 
-## 疑难解答
+## поиск неисправностей
 
-Q：toml配置如何改为json配置?
+Q：toml Как изменить конфигурацию json Формат?
 
-A：可以把toml后缀改成json,然后通过[这个地址](https://toml-to-json.matiaskorhonen.fi/)，把toml格式配置转换成json格式。
+A：Можно положить toml Суффикс изменен на json,Затем пройдите [Этот адрес](https://toml-to-json.matiaskorhonen.fi/)，把 tomlКонфигурация формата, преобразованная в json Формат
