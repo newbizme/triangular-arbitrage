@@ -4,13 +4,13 @@ import { logger, Helper } from './common';
 const config = require('config');
 
 export class Engine {
-  // 获取组合的边
+  // Получите сторону комбинации
   getEdge(tickers: types.ITickers, coinFrom: string, coinTo: string) {
     if ((!tickers && Object.keys(tickers).length === 0) || !coinFrom || !coinTo) {
       return;
     }
 
-    // 查找匹配的ticker
+    // Найти соответствия ticker
     const buyTicker = tickers[coinTo + '/' + coinFrom];
 
     const edge = <types.IEdge>{ coinFrom, coinTo };
@@ -20,7 +20,7 @@ export class Engine {
       edge.price = buyTicker.ask;
       edge.quantity = buyTicker.askVolume;
     } else {
-      // 查找匹配的ticker
+      // Найти соответствия ticker
       const sellTicker = tickers[coinFrom + '/' + coinTo];
       if (!sellTicker) {
         return;
@@ -33,7 +33,7 @@ export class Engine {
     return edge;
   }
 
-  // 获取三角套利信息
+  // Получать информацию о треугольном треугольнике
   private getTriangle(tickers: types.ITickers, abc: { a: string; b: string; c: string }) {
     if ((!tickers && Object.keys(tickers).length === 0) || !abc || !abc.a || !abc.b || !abc.c) {
       return;
@@ -73,11 +73,11 @@ export class Engine {
       aCoinToSet[market.base] = market;
     });
 
-    // 去掉b点coin
+    // Удалить b-точку coin
     delete aCoinToSet[abc.b];
 
     /*
-      通过BPair配对
+      Сопряженный BPair
     */
     const triangles: types.ITriangle[] = [];
     for (let i = 0; i < bPairs.length; i++) {
@@ -86,7 +86,7 @@ export class Engine {
       if (aCoinToSet[bPairMarket.base]) {
         const stepC = this.getEdge(tickers, bPairMarket.base, abc.a);
 
-        // 匹配到路径C
+        // Матч по пути C
         if (stepC) {
           abc.c = stepC.coinFrom;
 
@@ -113,10 +113,10 @@ export class Engine {
       return;
     }
     const timer = Helper.getTimer();
-    logger.debug('getCandidates:获取全市场候选者[开始]');
+    logger.debug('getCandidates:Получить полный кандидат на рынке [начать]');
     for (const [index, marketPair] of marketPairs.entries()) {
       const paths = marketPairs.slice(0);
-      // 删除起始路径
+      // Удалить начальный путь
       paths.splice(index, 1);
 
       for (const path of paths) {
@@ -132,12 +132,12 @@ export class Engine {
       });
     }
 
-    // 淘汰落选者
+    // Устранить проигравшего
     if (candidates.length > config.display.maxRows) {
       candidates = candidates.slice(0, config.display.maxRows);
     }
 
-    logger.debug(`getCandidates:获取全市场候选者[终了] ${Helper.endTimer(timer)}`);
+    logger.debug(`getCandidates:Получить полный кандидат на рынке [окончательный] ${Helper.endTimer(timer)}`);
     return candidates;
   }
 }
