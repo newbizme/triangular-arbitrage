@@ -22,13 +22,13 @@ export class Daemon {
 
   // 重启套利流程
   private async reboot(exchange: types.IExchange, trade: types.ITradeTriangle, queue: types.IQueue) {
-    logger.info('----- 继续前次套利 -----');
-    logger.info(`路径：${clc.cyanBright(trade.id)} 利率: ${trade.rate}`);
-    // 第一步
+    logger.info('----- Продолжить предыдущий арбитраж -----');
+    logger.info(`путь：${clc.cyanBright(trade.id)} Процентная ставка: ${trade.rate}`);
+    // Первый шаг
     if (queue.step === 0) {
       if (!trade.a.orderId) {
-        logger.info('A点订单为空，退出交易队列！');
-        // 退出交易队列
+        logger.info('Точечный порядок пуст, выйдите из очереди на торговлю');
+        // Выйти из торговой очереди
         await this.storage.clearQueue(trade.id, exchange.id);
       } else {
         if (queue._id) {
@@ -49,7 +49,7 @@ export class Daemon {
     }
   }
 
-  // 继续处理失败的队列
+  // Продолжить обработку неудавшейся очереди
   async continueTrade(exchange: types.IExchange) {
     const res = await this.storage.queue.allDocs({
       include_docs: true,
